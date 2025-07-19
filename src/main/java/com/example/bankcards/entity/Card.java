@@ -24,9 +24,11 @@ public class Card {
     @ManyToOne
     private User owner;
 
-    private Status status;
+    private CardStatus cardStatus;
 
     private LocalDate expirationDate;
+
+    private boolean isDeleted;
 
     private BigDecimal balance = BigDecimal.valueOf(0.00);
 }
