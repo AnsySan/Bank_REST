@@ -1,17 +1,11 @@
 package com.example.bankcards.service;
 
-import io.jsonwebtoken.Claims;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.function.Function;
+import com.example.bankcards.dto.UserResponse;
+import com.example.bankcards.entity.User;
 
 public interface JwtService {
-    <T> T extractClaims(String token, Function<Claims, T> claimsResolver);
 
-    String extractUsername(String token);
+    UserResponse generateToken(User user);
 
-    boolean validateToken(String token);
-
-    Claims extractAllClaims(String token);
-
+    UserResponse regenerateToken(String token);
 }
