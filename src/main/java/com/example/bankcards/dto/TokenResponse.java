@@ -9,13 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserResponse {
-
-    private long id;
-    private String username;
-    private String password;
-    private String email;
-    private String phone;
-    private boolean isBanned;
-
+public class TokenResponse {
+    private String accessToken;
+    private String refreshToken;
+    private Long userId;
 }

@@ -1,6 +1,7 @@
 package com.example.bankcards.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -19,13 +20,20 @@ public class Transfer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @ManyToOne
+    @JoinColumn(name = "from_card_id")
+    @NotNull(message = "Card from cannot not null")
     private Card fromCard;
 
+    @ManyToOne
+    @JoinColumn(name = "to_card_id")
+    @NotNull(message = "Card to cannot not null")
     private Card toCard;
 
     private BigDecimal amount;
 
-    private TransferStatus
+    @Enumerated(EnumType.STRING)
+    private TransferStatus status;
 
     private LocalDateTime createdAt;
 

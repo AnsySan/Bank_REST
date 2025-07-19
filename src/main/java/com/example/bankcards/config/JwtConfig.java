@@ -16,7 +16,7 @@ public class JwtConfig {
     @Value("${security.jwt.access_secret}")
     private String access_secret;
     @Value("${security.jwt.refresh_secret}")
-    private String refresg_secret;
+    private String refresh_secret;
     @Value("${security.jwt.prefix}")
     private String prefix;
     @Value("${security.jwt.access_token_expiration}")
