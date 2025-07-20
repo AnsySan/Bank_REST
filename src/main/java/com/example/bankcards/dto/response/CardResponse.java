@@ -1,6 +1,6 @@
-package com.example.bankcards.dto;
+package com.example.bankcards.dto.response;
 
-import com.example.bankcards.entity.CardStatus;
+import com.example.bankcards.entity.enums.CardStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
