@@ -1,5 +1,7 @@
 package com.example.bankcards.entity;
 
+import com.example.bankcards.entity.enums.CardStatus;
+import com.example.bankcards.entity.enums.CardType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,6 +29,8 @@ public class Card {
     private CardStatus cardStatus;
 
     private LocalDate expirationDate;
+
+    private CardType cardType;
 
     private boolean isDeleted;
 

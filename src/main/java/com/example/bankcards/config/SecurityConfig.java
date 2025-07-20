@@ -1,7 +1,7 @@
 package com.example.bankcards.config;
 
 import com.example.bankcards.security.JwtFilter;
-import com.example.bankcards.service.UserService;
+import com.example.bankcards.service.user.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
