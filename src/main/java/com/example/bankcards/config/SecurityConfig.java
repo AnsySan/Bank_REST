@@ -1,6 +1,6 @@
 package com.example.bankcards.config;
 
-import com.example.bankcards.service.JwtFilter;
+import com.example.bankcards.security.JwtFilter;
 import com.example.bankcards.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
