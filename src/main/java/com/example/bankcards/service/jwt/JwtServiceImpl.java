@@ -1,6 +1,6 @@
-package com.example.bankcards.service;
+package com.example.bankcards.service.jwt;
 
-import com.example.bankcards.dto.UserResponse;
+import com.example.bankcards.dto.response.UserResponse;
 import com.example.bankcards.entity.Token;
 import com.example.bankcards.entity.User;
 import com.example.bankcards.exception.UserNotFoundException;

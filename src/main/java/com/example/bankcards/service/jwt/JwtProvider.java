@@ -1,4 +1,4 @@
-package com.example.bankcards.service;
+package com.example.bankcards.service.jwt;
 
 import com.example.bankcards.config.JwtConfig;
 import io.jsonwebtoken.*;

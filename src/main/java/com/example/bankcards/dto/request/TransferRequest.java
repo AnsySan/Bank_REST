@@ -1,5 +1,6 @@
-package com.example.bankcards.dto;
+package com.example.bankcards.dto.request;
 
+import com.example.bankcards.dto.EncryptedCardNumber;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

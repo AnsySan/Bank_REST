@@ -1,11 +1,8 @@
-package com.example.bankcards.service;
+package com.example.bankcards.service.user;
 
-import com.example.bankcards.dto.UserResponse;
-import org.springframework.data.domain.Page;
+import com.example.bankcards.dto.response.UserResponse;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
-import java.util.List;
 
 public interface UserService extends UserDetailsService {
 

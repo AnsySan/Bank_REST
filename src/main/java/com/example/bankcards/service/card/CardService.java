@@ -1,8 +1,8 @@
-package com.example.bankcards.service;
+package com.example.bankcards.service.card;
 
-import com.example.bankcards.dto.BalanceResponse;
-import com.example.bankcards.dto.CardResponse;
-import com.example.bankcards.entity.CardStatus;
+import com.example.bankcards.dto.response.BalanceResponse;
+import com.example.bankcards.dto.response.CardResponse;
+import com.example.bankcards.entity.enums.CardStatus;
 
 public interface CardService {
 
