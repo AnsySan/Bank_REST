@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -28,7 +29,7 @@ public class Card {
 
     private CardStatus cardStatus;
 
-    private LocalDate expirationDate;
+    private LocalDateTime expirationDate;
 
     private CardType cardType;
 
