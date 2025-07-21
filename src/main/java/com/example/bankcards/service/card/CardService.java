@@ -1,12 +1,13 @@
 package com.example.bankcards.service.card;
 
+import com.example.bankcards.dto.request.CardTypeRequest;
 import com.example.bankcards.dto.response.BalanceResponse;
 import com.example.bankcards.dto.response.CardResponse;
 import com.example.bankcards.entity.enums.CardStatus;
 
 public interface CardService {
 
-    CardResponse create(Long ownerId);
+    CardResponse create(Long ownerId, CardTypeRequest cardResponse);
 
     CardResponse changeStatus(Long ownerId, CardStatus cardStatus);
 

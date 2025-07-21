@@ -1,0 +1,128 @@
+package com.example.bankcards.service.card;
+
+import com.example.bankcards.dto.request.CardTypeRequest;
+import com.example.bankcards.dto.response.BalanceResponse;
+import com.example.bankcards.dto.response.CardResponse;
+import com.example.bankcards.entity.Card;
+import com.example.bankcards.entity.User;
+import com.example.bankcards.entity.enums.CardStatus;
+import com.example.bankcards.entity.enums.CardType;
+import com.example.bankcards.entity.enums.Role;
+import com.example.bankcards.exception.CardNotFoundException;
+import com.example.bankcards.exception.UserNotFoundException;
+import com.example.bankcards.repository.CardRepository;
+import com.example.bankcards.repository.UserRepository;
+import com.example.bankcards.util.mapper.CardMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class CardServiceImpl implements CardService {
+    private final CardRepository cardRepository;
+    private final CardMapper cardMapper;
+    private final UserRepository userRepository;
+    private final CardNumberGenerate cardNumberGenerate;
+
+
+    @Override
+    public CardResponse create(Long ownerId, CardTypeRequest cardTypeRequest) {
+        User user = userRepository.findById(ownerId).orElseThrow(() -> new UserNotFoundException("User not found" + ownerId));
+        CardType cardType = cardTypeRequest.getCardType();
+        String cardNumberCreate = Card.builder().build().getCardNumber();
+        String cardNumber = CardNumberGenerate.generate(cardType, ownerId, cardNumberCreate);
+        LocalDateTime expiration = LocalDateTime.now().plusYears(5);
+        Card card = Card.builder()
+                .cardNumber(cardNumber)
+                .cardStatus(CardStatus.ACTIVE)
+                .owner(user)
+                .expirationDate(expiration)
+                .isDeleted(false)
+                .cardType(cardType)
+                .balance(BigDecimal.ZERO)
+                .build();
+        Card savedCard = cardRepository.save(card);
+        return cardMapper.toDto(savedCard);
+    }
+
+    @Override
+    public CardResponse changeStatus(Long ownerId, CardStatus cardStatus) {
+        User user = userRepository.findById(ownerId).orElseThrow(() -> new UserNotFoundException("User not found" + ownerId));
+        Card card = getBankCard(ownerId);
+        card.setCardStatus(cardStatus);
+
+        card = cardRepository.save(card);
+
+        return cardMapper.toDto(card);
+    }
+
+    @Override
+    public void deleteCard(Long cardId) {
+        Card card = getBankCard(cardId);
+        card.setDeleted(true);
+        cardRepository.save(card);
+    }
+
+    @Override
+    public CardResponse findCardById(Long cardId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User not found" + username));
+        Card card = getBankCard(cardId);
+        return cardMapper.toDto(card);
+    }
+
+    @Override
+    public CardResponse findCardByOwnerId(Long ownerId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Card card = getBankCard(ownerId);
+        checkUsername(card, username);
+        return cardMapper.toDto(card);
+    }
+
+    @Override
+    public CardResponse blockCard(Long cardId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Card card = getBankCard(cardId);
+        checkUsername(card, username);
+        if (card.getCardStatus() == CardStatus.ACTIVE) {
+            throw new IllegalStateException("Active card can be blocked");
+        }
+        card.setCardStatus(CardStatus.BLOCKED);
+        card = cardRepository.save(card);
+
+        return cardMapper.toDto(card);
+    }
+
+    @Override
+    public BalanceResponse getBalance(Long cardId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Card card = getBankCard(cardId);
+        checkUsername(card, username);
+        return new BalanceResponse(cardId, card.getBalance());
+    }
+
+    private Card getBankCard(Long cardId) {
+        return cardRepository.findById(cardId)
+                .orElseThrow(() -> new CardNotFoundException("Not found card by id = " + cardId));
+    }
+
+    private void checkUsername(Card Card, String username) {
+        if (!Card.getOwner().getUsername().equals(username)) {
+            log.error("Card ownership validation failed: cardOwner={}, requester={}",
+                    Card.getOwner().getUsername(), username);
+            throw new CardNotFoundException("Access denied. Card belongs to another user");
+        }
+    }
+
+    private void checkRoleAdmin(User user) {
+        if (!user.getRole().equals(Role.ADMIN)) {
+            throw new UserNotFoundException("Access denied. Insufficient rights");
+        }
+    }
+}
