@@ -16,6 +16,7 @@ public class CardResponse {
     private String cardNumber;
     private long ownerId;
     private LocalDateTime expirationDate;
+    private boolean isDeleted;
     private CardStatus cardStatus;
     private BigDecimal balance;
 }
