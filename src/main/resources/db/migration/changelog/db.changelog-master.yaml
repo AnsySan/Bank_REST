@@ -1,3 +1,3 @@
-databaseChanceLog:
-   - include:
-      file: db/migration/changelog/changeset/table_V001_users.sql
+databaseChangeLog:
+  - include:
+      file: db/migration/changelog/changeset/table_V001__users.sql

@@ -15,10 +15,10 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
-    password: Postgres
+    password: postgresql
 
   liquibase:
-    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    change-log: classpath:/db/migration/changelog/db.changelog-master.yaml
 
 server:
   port: 9000
