@@ -1,8 +1,10 @@
 package com.example.bankcards.service.jwt;
 
+import com.example.bankcards.dto.response.TokenResponse;
 import com.example.bankcards.dto.response.UserResponse;
 import com.example.bankcards.entity.Token;
 import com.example.bankcards.entity.User;
+import com.example.bankcards.exception.InvalidTokenException;
 import com.example.bankcards.exception.UserNotFoundException;
 import com.example.bankcards.repository.TokenRepository;
 import com.example.bankcards.repository.UserRepository;
@@ -20,21 +22,31 @@ public class JwtServiceImpl implements JwtService {
     private final TokenRepository tokenRepository;
 
     @Override
-    public UserResponse generateToken(User user) {
+    public TokenResponse generateToken(User user) {
         String accessToken = jwtProvider.generateAccessToken(user);
         String refreshToken = jwtProvider.generateRefreshToken(user);
         saveToken(user.getUsername(), refreshToken);
-        return null;
+        return TokenResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .userId(user.getId())
+                .build();
     }
 
     @Override
-    public UserResponse regenerateToken(String token) {
+    public TokenResponse regenerateToken(String token) {
+        if(!jwtProvider.validateToken(token)) {
+            throw new InvalidTokenException("Invalid token");
+        }
         String username = jwtProvider.extractAllClaims(token).getSubject();
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User not found" + username));
         return generateToken(user);
     }
 
     private void saveToken(String username, String token) {
+        if(!userRepository.existsByUsername(username)) {
+            throw new UserNotFoundException("User not found" + username);
+        }
         tokenRepository.save(new Token(username, token));
     }
 }
