@@ -1,5 +1,6 @@
 package com.example.bankcards.service.user;
 
+import com.example.bankcards.dto.filter.UserFilter;
 import com.example.bankcards.dto.response.UserResponse;
 import com.example.bankcards.entity.User;
 import com.example.bankcards.exception.UserNotFoundException;
@@ -7,6 +8,8 @@ import com.example.bankcards.repository.UserRepository;
 import com.example.bankcards.util.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -54,6 +57,12 @@ public class UserServiceImpl implements UserService {
         user.setIsBanned(true);
         userRepository.save(user);
         log.debug("Banned user: {}", id);
+    }
+
+    @Override
+    public Page<UserResponse> getAllUsers(UserFilter userFilter) {
+        Page<User> page = userRepository.findAll(PageRequest.of(userFilter.getOffset(), userFilter.getLimit()));
+        return page.map(userMapper::toDto);
     }
 
     public User findById(Long id) {

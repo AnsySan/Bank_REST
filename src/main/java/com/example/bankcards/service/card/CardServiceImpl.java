@@ -1,5 +1,6 @@
 package com.example.bankcards.service.card;
 
+import com.example.bankcards.dto.filter.CardFilter;
 import com.example.bankcards.dto.request.CardTypeRequest;
 import com.example.bankcards.dto.response.BalanceResponse;
 import com.example.bankcards.dto.response.CardResponse;
@@ -15,6 +16,8 @@ import com.example.bankcards.repository.UserRepository;
 import com.example.bankcards.util.mapper.CardMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -106,6 +109,19 @@ public class CardServiceImpl implements CardService {
         checkUsername(card, username);
         return new BalanceResponse(cardId, card.getBalance());
     }
+
+    @Override
+    public Page<CardResponse> getAllCards(CardFilter cardFilter) {
+        Page<Card> page = cardRepository.findAll(PageRequest.of(cardFilter.getOffset(), cardFilter.getLimit()));
+        return page.map(cardMapper::toDto);
+    }
+
+    @Override
+    public Page<CardResponse> getCardsByOwnerId(CardFilter filter) {;
+        Page<Card> page = cardRepository.findAll(PageRequest.of(filter.getOffset(), filter.getLimit()));
+        return page.map(cardMapper::toDto);
+    }
+
 
     private Card getBankCard(Long cardId) {
         return cardRepository.findById(cardId)

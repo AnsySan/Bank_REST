@@ -1,6 +1,8 @@
 package com.example.bankcards.service.user;
 
+import com.example.bankcards.dto.filter.UserFilter;
 import com.example.bankcards.dto.response.UserResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -17,4 +19,6 @@ public interface UserService extends UserDetailsService {
     void deleteUser(long id);
 
     void banUserByIds(long id);
+
+    Page<UserResponse> getAllUsers(UserFilter userFilter);
 }
