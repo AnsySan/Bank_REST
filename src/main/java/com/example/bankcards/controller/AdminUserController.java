@@ -5,11 +5,18 @@ import com.example.bankcards.dto.request.RegistrationRequestDto;
 import com.example.bankcards.dto.response.UserResponse;
 import com.example.bankcards.service.authentication.AuthenticationService;
 import com.example.bankcards.service.user.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,19 +26,61 @@ public class AdminUserController {
     private final UserService userService;
     private final AuthenticationService authenticationService;
 
-    public UserResponse create(RegistrationRequestDto registrationRequestDto) {
+    @Operation(
+            summary = "create user",
+            description = "Creates a new user",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Registration user",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = RegistrationRequestDto.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "user successfully created"),
+                    @ApiResponse(responseCode = "400", description = "Invalid create")
+            }
+    )
+    @PostMapping("/create")
+    public UserResponse create(@RequestBody @Valid RegistrationRequestDto registrationRequestDto) {
         return authenticationService.registration(registrationRequestDto);
     }
 
-    public void delete(Long userId) {
+    @Operation(
+            summary = "Delete user",
+            description = "Deleted a user",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "User successfully deleted"),
+                    @ApiResponse(responseCode = "404", description = "User not found")
+            }
+    )
+    @DeleteMapping("{/userId}")
+    public void delete(@Positive @Parameter @PathVariable("userId") Long userId) {
         userService.deleteUser(userId);
     }
 
-    public UserResponse getUser(Long userId) {
+    @Operation(
+            summary = "Get user by ID",
+            description = "Get user by ID",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "User found"),
+                    @ApiResponse(responseCode = "404", description = "User not found")
+            }
+    )
+    @GetMapping("get/{userId}")
+    public UserResponse getUser(@PathVariable("userId") Long userId) {
         return userService.getUserById(userId);
     }
 
-    public Page<UserResponse> AllUsers(Integer offset, Integer limit) {
+    @Operation(
+            summary = "Get user with filters",
+            description = "Returns a paginated list of users filtered by criteria",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Filtered user list returned successfully"),
+                    @ApiResponse(responseCode = "404", description = "Filtered user list not found")
+            }
+    )
+    @GetMapping("/get")
+    public Page<UserResponse> allUsers(@RequestParam(defaultValue = "0", required = false) @Positive Integer offset,
+                                       @RequestParam(defaultValue = "10", required = false) @Positive @Max(50) Integer limit) {
         UserFilter userFilter = new UserFilter(offset, limit);
         return userService.getAllUsers(userFilter);
     }

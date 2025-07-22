@@ -5,11 +5,16 @@ import com.example.bankcards.dto.request.CardTypeRequest;
 import com.example.bankcards.dto.response.CardResponse;
 import com.example.bankcards.entity.enums.CardStatus;
 import com.example.bankcards.service.card.CardService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,27 +23,93 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminCardController {
     private final CardService cardService;
 
-    public CardResponse createCard(Long ownerId, CardTypeRequest cardTypeRequest) {
+    @Operation(
+            summary = "Created a new card",
+            description = "Creates a new card for the user",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Card creation request payload",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = CardTypeRequest.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Card successfully created"),
+                    @ApiResponse(responseCode = "400", description = "Invalid request")
+            }
+    )
+    @PostMapping("/{ownerId}")
+    public CardResponse createCard(@PathVariable("ownerId") Long ownerId,
+                                   @RequestBody @Valid CardTypeRequest cardTypeRequest) {
         return cardService.create(ownerId, cardTypeRequest);
     }
 
-    public CardResponse changeCardStatus(Long cardId, CardStatus cardStatus) {
+    @Operation(
+            summary = "Set card status",
+            description = "Change the status of a card",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Card status successfully updated"),
+                    @ApiResponse(responseCode = "404", description = "Card not found")
+            }
+    )
+    @PostMapping("/{cardId}/status/update")
+    public CardResponse changeCardStatus(@PathVariable("cardId")Long cardId,
+                                         @RequestBody CardStatus cardStatus) {
         return cardService.changeStatus(cardId, cardStatus);
     }
 
-    public void deleteCard(Long cardId) {
+    @Operation(
+            summary = "Deleted card by ID",
+            description = "Deleted cart by ID",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Card successfully deleted"),
+                    @ApiResponse(responseCode = "404", description = "Card not found")
+            }
+    )
+    @DeleteMapping("{/cardId}")
+    public void deleteCard(@PathVariable("cardId") Long cardId) {
         cardService.deleteCard(cardId);
     }
-
-    public CardResponse getCard(Long cardId) {
+    @Operation(
+            summary = "Get card by ID",
+            description = "Retrieves details of a card by its ID",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Card found",
+                            content = @Content(schema = @Schema(implementation = CardResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "Card not found")
+            }
+    )
+    @GetMapping("/get/card/{cardId}")
+    public CardResponse getCard(@PathVariable("cardId")Long cardId) {
         return cardService.findCardById(cardId);
     }
 
-    public CardResponse blockCard(Long cardId){
+    @Operation(
+            summary = "Blocked card",
+            description = "Blocked card by ID",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Card blocked"),
+                    @ApiResponse(responseCode = "404", description = "Card not found")
+            }
+    )
+    @PostMapping("/block/{cardId}")
+    public CardResponse blockCard(@PathVariable("cardId")Long cardId){
         return cardService.blockCard(cardId);
     }
-
-    public Page<CardResponse> getAllCards(Integer offset, Integer limit) {
+    @Operation(
+            summary = "Get cards with filters",
+            description = "Returns a paginated list of cards filtered by various criteria",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Search request with filter conditions",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = CardFilter.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Filtered card list returned successfully"),
+                    @ApiResponse(responseCode = "404", description = "Filtered card list not found")
+            }
+    )
+    @GetMapping("/get")
+    public Page<CardResponse> getAllCards(@RequestParam(defaultValue = "0", required = false)Integer offset,
+                                          @RequestParam(defaultValue = "10", required = false) @Max(100) Integer limit) {
         CardFilter  cardFilter = new CardFilter(offset, limit);
         return cardService.getAllCards(cardFilter);
     }

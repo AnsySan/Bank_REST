@@ -2,13 +2,9 @@ package com.example.bankcards.controller;
 
 import com.example.bankcards.dto.filter.CardFilter;
 import com.example.bankcards.dto.request.CardTypeRequest;
-import com.example.bankcards.dto.request.TransferRequest;
 import com.example.bankcards.dto.response.BalanceResponse;
 import com.example.bankcards.dto.response.CardResponse;
-import com.example.bankcards.dto.response.TokenResponse;
 import com.example.bankcards.dto.response.TransferResponse;
-import com.example.bankcards.entity.Transfer;
-import com.example.bankcards.entity.User;
 import com.example.bankcards.entity.enums.CardStatus;
 import com.example.bankcards.repository.UserRepository;
 import com.example.bankcards.service.card.CardService;
@@ -18,8 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.math.BigDecimal;
 
 @RestController
 @RequiredArgsConstructor
