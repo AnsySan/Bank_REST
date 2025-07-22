@@ -13,14 +13,14 @@ public enum CardType {
     public static final int DIGIT_IN_ONE_SECTION = 4;
 
     private final int typeCode;
-    private final String name;
+    private final String CardName;
     private final String prefix;
     private final String regex;
     private final int length;
 
-    CardType(int typeCode, String name, String prefix, String regex, int length) {
+    CardType(int typeCode, String CardName, String prefix, String regex, int length) {
         this.typeCode = typeCode;
-        this.name = name;
+        this.CardName = CardName;
         this.prefix = prefix;
         this.regex = regex;
         this.length = length;
