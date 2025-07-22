@@ -17,7 +17,7 @@ public class Token {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String username;
 
-    @Column(name = "token", nullable = false, unique = true)
+    @Column(name = "refresh_token", nullable = false, unique = true)
     @NotBlank
     private String token;
 }
