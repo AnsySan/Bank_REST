@@ -32,7 +32,7 @@ public class Card {
     private User owner;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", nullable = false, length = 50)
     @NotNull
     private CardStatus cardStatus;
 
@@ -41,7 +41,7 @@ public class Card {
     private LocalDateTime expirationDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false)
+    @Column(name = "type", nullable = false, length = 50)
     @NotNull
     private CardType cardType;
 

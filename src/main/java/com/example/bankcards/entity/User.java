@@ -27,20 +27,20 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "username",nullable = false, length = 64)
+    @Column(name = "username",nullable = false, unique = true, length = 64)
     private String username;
 
     @Column(name = "password", nullable = false, length = 128)
     private String password;
 
-    @Column(name = "email", nullable = false, length = 64)
+    @Column(name = "email", nullable = false, unique = true, length = 64)
     private String email;
 
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(name = "is_banned")
+    @Column(name = "is_banned", nullable = false)
     private Boolean isBanned;
 
     @CreationTimestamp

@@ -40,7 +40,7 @@ public class Transfer {
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "status", nullable = false, length = 50)
     private TransferStatus status = TransferStatus.PENDING;
 
     @CreationTimestamp
