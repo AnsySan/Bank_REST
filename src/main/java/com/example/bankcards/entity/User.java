@@ -2,7 +2,10 @@ package com.example.bankcards.entity;
 
 import com.example.bankcards.entity.enums.Role;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,23 +27,35 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(name = "username",nullable = false, length = 64)
     private String username;
 
+    @Column(name = "password", nullable = false, length = 128)
     private String password;
 
+    @Column(name = "email", nullable = false, length = 64)
     private String email;
 
-    private String phone;
-
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(name = "is_banned")
     private Boolean isBanned;
 
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @NotNull
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @NotNull
     private LocalDateTime updatedAt;
 
-    @OneToMany
+    @OneToMany(mappedBy = "owner")
     private List<Card> cards;
 
     @Override

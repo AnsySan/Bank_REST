@@ -1,6 +1,7 @@
 package com.example.bankcards.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
@@ -11,8 +12,12 @@ import lombok.*;
 @ToString
 @Table(name = "tokens")
 public class Token {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String username;
+
+    @Column(name = "token", nullable = false, unique = true)
+    @NotBlank
     private String token;
 }
