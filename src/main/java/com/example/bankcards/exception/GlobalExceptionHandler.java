@@ -58,6 +58,20 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(e, request);
     }
 
+    @ExceptionHandler(InvalidTokenException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse handleInvalidTokenException(InvalidTokenException e, HttpServletRequest request) {
+        log.error("Invalid token: {}", e.getMessage(), e);
+        return buildErrorResponse(e, request);
+    }
+
+    @ExceptionHandler(TransferException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleTransferException(TransferException e, HttpServletRequest request) {
+        log.error("Transfer exception: {}", e.getMessage(), e);
+        return buildErrorResponse(e, request);
+    }
+
     private ErrorResponse buildErrorResponse(Exception e, HttpServletRequest request) {
         return ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
