@@ -128,10 +128,10 @@ public class CardServiceImpl implements CardService {
                 .orElseThrow(() -> new CardNotFoundException("Not found card by id = " + cardId));
     }
 
-    private void checkUsername(Card Card, String username) {
-        if (!Card.getOwner().getUsername().equals(username)) {
+    private void checkUsername(Card card, String username) {
+        if (!card.getOwner().getUsername().equals(username)) {
             log.error("Card ownership validation failed: cardOwner={}, requester={}",
-                    Card.getOwner().getUsername(), username);
+                    card.getOwner().getUsername(), username);
             throw new CardNotFoundException("Access denied. Card belongs to another user");
         }
     }
