@@ -27,7 +27,7 @@ public class TransferServiceImpl implements TransferService {
     private final TransferMapper transferMapper;
 
     @Override
-    public Transfer transfer(TransferResponse transferResponse) {
+    public TransferResponse transfer(TransferResponse transferResponse) {
         Card toCard = cardRepository.findById(transferResponse.getToCardId()).orElseThrow();
         Long toCardId = transferResponse.getToCardId();
 
@@ -53,8 +53,7 @@ public class TransferServiceImpl implements TransferService {
         transfer.setFromCard(fromCard);
         transfer.setToCard(toCard);
         transfer.setCreatedAt(LocalDateTime.now());
-
-        return transferRepository.save(transfer);
+        return transferMapper.toDto(transferRepository.save(transfer));
     }
 
     @Override

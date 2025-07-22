@@ -5,7 +5,7 @@ import com.example.bankcards.dto.response.TransferResponse;
 import com.example.bankcards.entity.Transfer;
 
 public interface TransferService {
-    Transfer transfer(TransferResponse transferResponse);
+    TransferResponse transfer(TransferResponse transferResponse);
 
     void cancelTransfer(TransferResponse transferResponse);
 
