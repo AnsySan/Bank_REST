@@ -17,14 +17,10 @@ public interface CardService {
 
     CardResponse findCardById(Long cardId);
 
-    CardResponse findCardByOwnerId(Long ownerId);
-
     CardResponse blockCard(Long cardId);
 
     BalanceResponse getBalance(Long cardId);
 
     Page<CardResponse> getAllCards(CardFilter cardFilter);
-
-    Page<CardResponse> getCardsByOwnerId(CardFilter filter);
 
 }

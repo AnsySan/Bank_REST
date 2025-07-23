@@ -81,14 +81,6 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public CardResponse findCardByOwnerId(Long ownerId) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Card card = getBankCard(ownerId);
-        checkUsername(card, username);
-        return cardMapper.toDto(card);
-    }
-
-    @Override
     public CardResponse blockCard(Long cardId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Card card = getBankCard(cardId);
@@ -115,13 +107,6 @@ public class CardServiceImpl implements CardService {
         Page<Card> page = cardRepository.findAll(PageRequest.of(cardFilter.getOffset(), cardFilter.getLimit()));
         return page.map(cardMapper::toDto);
     }
-
-    @Override
-    public Page<CardResponse> getCardsByOwnerId(CardFilter filter) {;
-        Page<Card> page = cardRepository.findAll(PageRequest.of(filter.getOffset(), filter.getLimit()));
-        return page.map(cardMapper::toDto);
-    }
-
 
     private Card getBankCard(Long cardId) {
         return cardRepository.findById(cardId)
