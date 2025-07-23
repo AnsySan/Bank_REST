@@ -74,7 +74,7 @@ public class UserCardController {
                     @ApiResponse(responseCode = "404", description = "Card not found")
             }
     )
-    @DeleteMapping("{/id}/delete")
+    @DeleteMapping("/{id}/delete")
     @ResponseStatus(HttpStatus.OK)
     public void deleteCard(@PathVariable("id") Long id) {
         cardService.deleteCard(id);

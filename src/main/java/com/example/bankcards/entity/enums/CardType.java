@@ -1,8 +1,10 @@
 package com.example.bankcards.entity.enums;
 
-import lombok.Getter;
+import lombok.*;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor(force = true)
 public enum CardType {
     VISA(1, "Visa", "411111", "4[0-9]{12,15}", 16),
 
@@ -18,11 +20,4 @@ public enum CardType {
     private final String regex;
     private final int length;
 
-    CardType(int typeCode, String CardName, String prefix, String regex, int length) {
-        this.typeCode = typeCode;
-        this.CardName = CardName;
-        this.prefix = prefix;
-        this.regex = regex;
-        this.length = length;
-    }
 }
