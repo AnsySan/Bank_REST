@@ -1,6 +1,5 @@
 package com.example.bankcards.service.card;
 
-import com.example.bankcards.entity.Card;
 import com.example.bankcards.entity.enums.CardType;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
