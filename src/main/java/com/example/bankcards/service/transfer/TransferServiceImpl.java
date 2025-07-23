@@ -28,12 +28,15 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public TransferResponse transfer(TransferResponse transferResponse) {
+        log.info("Transfer request received");
         Card toCard = cardRepository.findById(transferResponse.getToCardId()).orElseThrow();
         Long toCardId = transferResponse.getToCardId();
 
+        log.debug("Transfer to card id: {}", toCardId);
         Card fromCard = cardRepository.findById(transferResponse.getFromCardId()).orElseThrow();
         Long fromCardId = transferResponse.getFromCardId();
 
+        log.debug("Transfer from card id: {}", fromCardId);
         checkIfSenderCardIsLocked(fromCard.getCardStatus(), fromCard.getId());
         checkIfTransferAvailableForYourselfOnly(fromCardId,toCardId, fromCard.getId(), toCard.getId());
 
@@ -43,6 +46,7 @@ public class TransferServiceImpl implements TransferService {
         toCard.setBalance(toCardBalance);
         fromCard.setBalance(fromCard.getBalance().subtract(amount));
 
+        log.debug("Transfer to card balance: {}", toCardBalance);
         cardRepository.saveAll(List.of(fromCard, toCard));
 
         transferResponse.setStatus(TransferStatus.COMPLETED);
@@ -53,11 +57,13 @@ public class TransferServiceImpl implements TransferService {
         transfer.setFromCard(fromCard);
         transfer.setToCard(toCard);
         transfer.setCreatedAt(LocalDateTime.now());
+        log.debug("Transfer completed");
         return transferMapper.toDto(transferRepository.save(transfer));
     }
 
     @Override
     public void cancelTransfer(TransferResponse transferResponse) {
+        log.debug("Transfer request received");
         Transfer transfer = transferMapper.toEntity(transferResponse);
         Card card = cardRepository.findById(transferResponse.getFromCardId()).orElseThrow();
 

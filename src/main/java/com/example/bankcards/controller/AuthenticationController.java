@@ -12,8 +12,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,6 +43,7 @@ public class AuthenticationController {
     @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponse registration(@RequestBody @Valid RegistrationRequestDto registrationRequestDto) {
+        log.info("Registration request: {}", registrationRequestDto);
         return authenticationService.registration(registrationRequestDto);
     }
 
@@ -60,6 +63,7 @@ public class AuthenticationController {
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
     public TokenResponse login(@RequestBody @Valid LoginRequest loginRequest) {
+        log.info("Login request: {}", loginRequest);
         return authenticationService.login(loginRequest);
     }
 
@@ -76,12 +80,16 @@ public class AuthenticationController {
             }
     )
     @PostMapping("/logout")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseCookie logout(){
-        return ResponseCookie.from("refresh_token", "")
+    public ResponseEntity<?> logout() {
+        log.info("Logout user");
+        ResponseCookie cookie = ResponseCookie.from("refresh_token", "")
                 .httpOnly(true)
                 .path("/v1/api/auth/refresh_token")
                 .maxAge(0)
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .build();
     }
     @Operation(
@@ -93,7 +101,8 @@ public class AuthenticationController {
     )
     @PostMapping("/refresh_token")
     @ResponseStatus(HttpStatus.OK)
-    public TokenResponse refreshToken( String refreshToken) {
+    public TokenResponse refreshToken(@RequestParam String refreshToken) {
+        log.info("Refresh token: {}", refreshToken);
         return authenticationService.refreshToken(refreshToken);
     }
 }

@@ -45,6 +45,7 @@ public class AdminCardController {
     @ResponseStatus(HttpStatus.CREATED)
     public CardResponse createCard(@PathVariable("ownerId") Long ownerId,
                                    @RequestBody @Valid CardTypeRequest cardTypeRequest) {
+        log.info("Creating new card");
         return cardService.create(ownerId, cardTypeRequest);
     }
 
@@ -60,6 +61,7 @@ public class AdminCardController {
     @ResponseStatus(HttpStatus.OK)
     public CardResponse changeCardStatus(@PathVariable("cardId")Long cardId,
                                          @RequestBody CardStatus cardStatus) {
+        log.info("Changing status of a card");
         return cardService.changeStatus(cardId, cardStatus);
     }
 
@@ -71,9 +73,10 @@ public class AdminCardController {
                     @ApiResponse(responseCode = "404", description = "Card not found")
             }
     )
-    @DeleteMapping("{/cardId}")
+    @DeleteMapping("/{cardId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCard(@PathVariable("cardId") Long cardId) {
+        log.info("Deleting card by ID");
         cardService.deleteCard(cardId);
     }
     @Operation(
@@ -88,6 +91,7 @@ public class AdminCardController {
     @GetMapping("/get/card/{cardId}")
     @ResponseStatus(HttpStatus.OK)
     public CardResponse getCard(@PathVariable("cardId")Long cardId) {
+        log.info("Retrieving card by ID");
         return cardService.findCardById(cardId);
     }
 
@@ -100,8 +104,9 @@ public class AdminCardController {
             }
     )
     @PostMapping("/block/{cardId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public CardResponse blockCard(@PathVariable("cardId")Long cardId){
+        log.info("Blocking card by ID");
         return cardService.blockCard(cardId);
     }
     @Operation(
@@ -121,6 +126,7 @@ public class AdminCardController {
     @ResponseStatus(HttpStatus.OK)
     public Page<CardResponse> getAllCards(@RequestParam(defaultValue = "0", required = false)Integer offset,
                                           @RequestParam(defaultValue = "10", required = false) @Max(100) Integer limit) {
+        log.info("Retrieving all cards");
         CardFilter  cardFilter = new CardFilter(offset, limit);
         return cardService.getAllCards(cardFilter);
     }

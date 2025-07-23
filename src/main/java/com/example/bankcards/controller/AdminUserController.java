@@ -47,6 +47,7 @@ public class AdminUserController {
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponse create(@RequestBody @Valid RegistrationRequestDto registrationRequestDto) {
+        log.info("Create user: {}", registrationRequestDto);
         return authenticationService.registration(registrationRequestDto);
     }
 
@@ -58,9 +59,10 @@ public class AdminUserController {
                     @ApiResponse(responseCode = "404", description = "User not found")
             }
     )
-    @DeleteMapping("{/userId}")
+    @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@Positive @Parameter @PathVariable("userId") Long userId) {
+        log.info("Delete user: {}", userId);
         userService.deleteUser(userId);
     }
 
@@ -75,6 +77,7 @@ public class AdminUserController {
     @GetMapping("get/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public UserResponse getUser(@PathVariable("userId") Long userId) {
+        log.info("Get user: {}", userId);
         return userService.getUserById(userId);
     }
 
@@ -90,6 +93,7 @@ public class AdminUserController {
     @ResponseStatus(HttpStatus.OK)
     public Page<UserResponse> allUsers(@RequestParam(defaultValue = "0", required = false) @Positive Integer offset,
                                        @RequestParam(defaultValue = "10", required = false) @Positive @Max(50) Integer limit) {
+        log.info("Get users: {}", offset);
         UserFilter userFilter = new UserFilter(offset, limit);
         return userService.getAllUsers(userFilter);
     }

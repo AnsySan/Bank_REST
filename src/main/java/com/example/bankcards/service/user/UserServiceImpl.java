@@ -23,21 +23,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
+        log.debug("loadUserByUsername");
         return userRepository.findByUsername(username).orElseThrow(() -> {return new UserNotFoundException(username);});
     }
 
     @Override
     public boolean existsByUsername(String username) {
+        log.debug("exists by username {}", username);
         return userRepository.existsByUsername(username);
     }
 
     @Override
     public boolean existsByEmail(String email) {
+        log.debug("exists by Email {}", email);
         return userRepository.existsByEmail(email);
     }
 
     @Override
     public UserResponse getUserById(long id) {
+        log.debug("get user by id {}", id);
         User user = findById(id);
         return userMapper.toDto(user);
     }
@@ -60,11 +64,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<UserResponse> getAllUsers(UserFilter userFilter) {
+        log.debug("get all users");
         Page<User> page = userRepository.findAll(PageRequest.of(userFilter.getOffset(), userFilter.getLimit()));
         return page.map(userMapper::toDto);
     }
 
     public User findById(Long id) {
+        log.debug("find by user: {}", id);
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found" + id));
     }
 }
