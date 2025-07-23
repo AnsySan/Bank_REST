@@ -12,12 +12,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
+@Slf4j
 @RequestMapping("v1/api/admin/cards")
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminCardController {
@@ -37,6 +42,7 @@ public class AdminCardController {
             }
     )
     @PostMapping("/{ownerId}")
+    @ResponseStatus(HttpStatus.CREATED)
     public CardResponse createCard(@PathVariable("ownerId") Long ownerId,
                                    @RequestBody @Valid CardTypeRequest cardTypeRequest) {
         return cardService.create(ownerId, cardTypeRequest);
@@ -51,6 +57,7 @@ public class AdminCardController {
             }
     )
     @PostMapping("/{cardId}/status/update")
+    @ResponseStatus(HttpStatus.OK)
     public CardResponse changeCardStatus(@PathVariable("cardId")Long cardId,
                                          @RequestBody CardStatus cardStatus) {
         return cardService.changeStatus(cardId, cardStatus);
@@ -65,6 +72,7 @@ public class AdminCardController {
             }
     )
     @DeleteMapping("{/cardId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCard(@PathVariable("cardId") Long cardId) {
         cardService.deleteCard(cardId);
     }
@@ -78,6 +86,7 @@ public class AdminCardController {
             }
     )
     @GetMapping("/get/card/{cardId}")
+    @ResponseStatus(HttpStatus.OK)
     public CardResponse getCard(@PathVariable("cardId")Long cardId) {
         return cardService.findCardById(cardId);
     }
@@ -91,6 +100,7 @@ public class AdminCardController {
             }
     )
     @PostMapping("/block/{cardId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public CardResponse blockCard(@PathVariable("cardId")Long cardId){
         return cardService.blockCard(cardId);
     }
@@ -108,6 +118,7 @@ public class AdminCardController {
             }
     )
     @GetMapping("/get")
+    @ResponseStatus(HttpStatus.OK)
     public Page<CardResponse> getAllCards(@RequestParam(defaultValue = "0", required = false)Integer offset,
                                           @RequestParam(defaultValue = "10", required = false) @Max(100) Integer limit) {
         CardFilter  cardFilter = new CardFilter(offset, limit);

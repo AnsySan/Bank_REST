@@ -5,25 +5,95 @@ import com.example.bankcards.dto.request.RegistrationRequestDto;
 import com.example.bankcards.dto.response.TokenResponse;
 import com.example.bankcards.dto.response.UserResponse;
 import com.example.bankcards.service.authentication.AuthenticationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
+@Slf4j
 @RequestMapping("v1/api/auth")
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
-    public UserResponse authenticate(RegistrationRequestDto registrationRequestDto) {
+    @Operation(
+            summary = "Registration user",
+            description = "Registration a new user",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "User registration request payload",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = RegistrationRequestDto.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "User successfully registration"),
+                    @ApiResponse(responseCode = "400", description = "Invalid request payload")
+            }
+    )
+    @PostMapping("/registration")
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserResponse registration(@RequestBody @Valid RegistrationRequestDto registrationRequestDto) {
         return authenticationService.registration(registrationRequestDto);
     }
 
-    public TokenResponse login(LoginRequest loginRequest) {
+    @Operation(
+            summary = "Login user",
+            description = "Login a user",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "User login request payload",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = LoginRequest.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "User successfully login"),
+                    @ApiResponse(responseCode = "400", description = "Invalid request payload")
+            }
+    )
+    @PostMapping("/login")
+    @ResponseStatus(HttpStatus.OK)
+    public TokenResponse login(@RequestBody @Valid LoginRequest loginRequest) {
         return authenticationService.login(loginRequest);
     }
 
-    public TokenResponse refreshToken(String refreshToken) {
+    @Operation(
+            summary = "Logout user",
+            description = "Logout a user",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "User logout request payload",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = RegistrationRequestDto.class))
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "User successfully logout"),
+            }
+    )
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseCookie logout(){
+        return ResponseCookie.from("refresh_token", "")
+                .httpOnly(true)
+                .path("/v1/api/auth/refresh_token")
+                .maxAge(0)
+                .build();
+    }
+    @Operation(
+            summary = "Generate token",
+            description = "Generates new access/refresh token",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Token successfully refresh"),
+            }
+    )
+    @PostMapping("/refresh_token")
+    @ResponseStatus(HttpStatus.OK)
+    public TokenResponse refreshToken( String refreshToken) {
         return authenticationService.refreshToken(refreshToken);
     }
 }

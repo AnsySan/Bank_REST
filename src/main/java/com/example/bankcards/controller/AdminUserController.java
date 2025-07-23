@@ -14,12 +14,17 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
+@Slf4j
 @RequestMapping("v1/api/admin/user")
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminUserController {
@@ -40,6 +45,7 @@ public class AdminUserController {
             }
     )
     @PostMapping("/create")
+    @ResponseStatus(HttpStatus.CREATED)
     public UserResponse create(@RequestBody @Valid RegistrationRequestDto registrationRequestDto) {
         return authenticationService.registration(registrationRequestDto);
     }
@@ -53,6 +59,7 @@ public class AdminUserController {
             }
     )
     @DeleteMapping("{/userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@Positive @Parameter @PathVariable("userId") Long userId) {
         userService.deleteUser(userId);
     }
@@ -66,6 +73,7 @@ public class AdminUserController {
             }
     )
     @GetMapping("get/{userId}")
+    @ResponseStatus(HttpStatus.OK)
     public UserResponse getUser(@PathVariable("userId") Long userId) {
         return userService.getUserById(userId);
     }
@@ -79,6 +87,7 @@ public class AdminUserController {
             }
     )
     @GetMapping("/get")
+    @ResponseStatus(HttpStatus.OK)
     public Page<UserResponse> allUsers(@RequestParam(defaultValue = "0", required = false) @Positive Integer offset,
                                        @RequestParam(defaultValue = "10", required = false) @Positive @Max(50) Integer limit) {
         UserFilter userFilter = new UserFilter(offset, limit);
