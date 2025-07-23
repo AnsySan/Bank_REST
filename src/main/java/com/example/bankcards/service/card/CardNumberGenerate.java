@@ -33,7 +33,17 @@ public class CardNumberGenerate {
         return mask.append(visibleNumber).toString();
     }
 
-        public static String generate(@NotNull CardType type, @NotNull Long ownerId, @NotNull String lastNumber) {
+        public String generate(CardType type, @NotNull Long ownerId, @NotNull String lastNumber) {
+            if (type == null) {
+                throw new IllegalArgumentException("CardType must not be null");
+            }
+            if (ownerId == null) {
+                throw new IllegalArgumentException("OwnerId must not be null");
+            }
+            if (lastNumber == null) {
+                throw new IllegalArgumentException("LastNumber must not be null");
+            }
+
             String prefix = type.getPrefix();
             int totalLength = type.getLength();
 

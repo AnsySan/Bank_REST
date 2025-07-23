@@ -29,7 +29,7 @@ public class CardResponse {
     private String cardNumber;
 
     @NotNull
-    private long ownerId;
+    private Long ownerId;
 
     @NotNull
     private LocalDateTime expirationDate;
